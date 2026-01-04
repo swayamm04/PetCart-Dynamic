@@ -15,7 +15,7 @@ const products: ProductCardProps[] = [
   },
   {
     name: "Hettich Onsys 4447i Soft Close Hinges, 1 Set (2 Nos)",
-    image: "https://images.unsplash.com/photo-1558618047-f4b511cc0c69?w=400&h=400&fit=crop",
+    image: "https://home-run.co/cdn/shop/files/4447i_Soft_Close_Hinges_1_Set_2_Nos_6f701d9b-ca45-4133-940f-bcbeb9f842ac.png?v=1758624384&width=713",
     regularPrice: 384,
     salePrice: 227,
     discountPercentage: 41,
@@ -33,7 +33,7 @@ const products: ProductCardProps[] = [
   },
   {
     name: "Century Sainik MR 303 Plywood",
-    image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=400&fit=crop", // Placeholder
+    image: "https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?w=400&h=400&fit=crop",
     regularPrice: 1442,
     salePrice: 1344,
     discountPercentage: 7,
@@ -44,7 +44,7 @@ const products: ProductCardProps[] = [
   },
   {
     name: "Asian Paints SmartCare Damp Proof Advanced",
-    image: "https://images.unsplash.com/photo-1620626012639-663806a6b579?w=400&h=400&fit=crop", // Placeholder
+    image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&h=400&fit=crop",
     regularPrice: 1600,
     salePrice: 1200,
     discountPercentage: 25,
