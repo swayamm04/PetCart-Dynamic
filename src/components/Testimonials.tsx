@@ -29,13 +29,13 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-16 bg-gradient-to-br from-primary/10 to-accent/10">
+    <section className="py-8 md:py-16 bg-gradient-to-br from-primary/10 to-accent/10">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">
             Customer's love HomeRun
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-xs md:text-base text-muted-foreground max-w-xl mx-auto">
             Join thousands of satisfied customers who trust us for their
             construction material needs
           </p>
@@ -45,33 +45,33 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-card rounded-2xl p-6 shadow-lg border border-border"
+              className="bg-card rounded-xl p-4 md:p-6 shadow-lg border border-border"
             >
               {/* Stars */}
-              <div className="flex gap-1 mb-4">
+              <div className="flex gap-1 mb-2 md:mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
                     key={i}
-                    className="w-5 h-5 fill-primary text-primary"
+                    className="w-4 h-4 md:w-5 md:h-5 fill-primary text-primary"
                   />
                 ))}
               </div>
 
               {/* Content */}
-              <p className="text-foreground mb-6 leading-relaxed">
+              <p className="text-xs md:text-base text-foreground mb-4 md:mb-6 leading-relaxed">
                 "{testimonial.content}"
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-accent text-accent-foreground rounded-full flex items-center justify-center font-semibold">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-8 h-8 md:w-12 md:h-12 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-xs md:text-base font-semibold">
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">
+                  <h4 className="text-xs md:text-base font-semibold text-foreground">
                     {testimonial.name}
                   </h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-[10px] md:text-sm text-muted-foreground">
                     {testimonial.role}
                   </p>
                 </div>

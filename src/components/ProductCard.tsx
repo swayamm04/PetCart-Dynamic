@@ -1,11 +1,7 @@
-import { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, ChevronDown } from "lucide-react";
-
-export interface ProductSelector {
-  label: string;
-  options: string[];
-}
+import { Plus, Minus, Clock } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 export interface ProductCardProps {
   name: string;
@@ -13,102 +9,95 @@ export interface ProductCardProps {
   regularPrice: number;
   salePrice: number;
   discountPercentage: number;
-  selectors?: ProductSelector[];
+  unit?: string;
 }
 
-const ProductCard = ({
-  name,
-  image,
-  regularPrice,
-  salePrice,
-  discountPercentage,
-  selectors,
-}: ProductCardProps) => {
-  const [quantity, setQuantity] = useState(1);
-  // State to track selected option for each selector
-  const [selections, setSelections] = useState<Record<string, string>>({});
+const ProductCard = ({ name, image, regularPrice, salePrice, discountPercentage, unit = "1" }: ProductCardProps) => {
+  const { cartItems, addToCart, updateQuantity } = useCart();
+  const cartItem = cartItems.find((item) => item.name === name);
+  const quantity = cartItem?.quantity || 0;
+
+  const handleAdd = () => {
+    addToCart({ id: name, name, price: salePrice, image });
+  };
 
   return (
-    <div className="flex flex-col h-full bg-transparent group">
-      {/* Image Area with Discount Tag */}
-      <div className="relative mb-4">
-        {discountPercentage > 0 && (
-          <div className="absolute top-0 left-0 z-10 bg-[#FFD700] text-black px-3 py-1 text-xs font-bold rounded-r-sm">
-            {discountPercentage}% OFF
-          </div>
-        )}
-        <div className="aspect-square bg-white rounded-xl p-4 flex items-center justify-center overflow-hidden">
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-500"
-          />
+    <div className="flex flex-col gap-2 w-full animate-in fade-in zoom-in duration-500">
+
+      {/* Visual Image Container (Green Card) */}
+      <div className="relative w-full aspect-square bg-[#76B079] rounded-2xl md:rounded-3xl p-4 flex items-center justify-center group overflow-hidden">
+        {/* Product Name Top Overlay (Optional per screenshot specific cards, trying to match 'Cabbage' style) */}
+        <div className="absolute top-2 left-3 md:top-4 md:left-4 z-10 w-3/4">
+          <span className="text-[10px] md:text-xs font-bold text-black/80 block leading-tight truncate">
+            {name.split(" -")[0]}
+          </span>
+        </div>
+
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-full object-contain drop-shadow-xl transition-transform duration-300 group-hover:scale-110 z-0 mt-4"
+        />
+
+        {/* Add Button / Quantity Selector */}
+        <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3 z-20">
+          {quantity === 0 ? (
+            <button
+              onClick={handleAdd}
+              className="bg-white text-[#45a049] text-xs font-bold py-1 px-3 md:py-1.5 md:px-5 rounded-lg md:rounded-xl shadow-md uppercase tracking-wide hover:bg-gray-50 active:scale-95 transition-all border border-gray-100"
+            >
+              Add
+            </button>
+          ) : (
+            <div className="flex items-center gap-1 bg-[#45a049] rounded-lg md:rounded-xl shadow-md p-0.5 md:p-1">
+              <button
+                onClick={() => updateQuantity(name, -1)}
+                className="w-5 h-5 md:w-7 md:h-7 flex items-center justify-center text-white hover:bg-[#388e3c] rounded-md transition-colors"
+              >
+                <Minus className="w-3 h-3 md:w-3 md:h-3" />
+              </button>
+              <span className="text-white font-bold text-xs md:text-sm min-w-[16px] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={() => updateQuantity(name, 1)}
+                className="w-5 h-5 md:w-7 md:h-7 flex items-center justify-center text-white hover:bg-[#388e3c] rounded-md transition-colors"
+              >
+                <Plus className="w-3 h-3 md:w-3 md:h-3" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Title */}
-        <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2 line-clamp-2 min-h-[2.5em]">
-          {name}
+      {/* Product Details Below */}
+      <div className="px-1 space-y-0.5">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="inline-block px-1.5 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded">
+            {unit}
+          </span>
+        </div>
+
+        <h3 className="font-semibold text-gray-900 text-xs md:text-sm truncate">
+          {name.split(" ")[0]}
         </h3>
 
-        {/* Price Row */}
-        <div className="flex items-baseline gap-3 mb-4">
-          <span className="text-gray-400 text-xs line-through decoration-gray-400">
-            Rs. {regularPrice.toLocaleString()}
-          </span>
-          <span className="text-base font-bold text-gray-900">
-            Rs. {salePrice.toLocaleString()}
-          </span>
+        <div className="flex items-center gap-1 text-[10px] text-gray-500 font-medium">
+          <Clock className="w-3 h-3" /> 14 mints
         </div>
 
-        {/* Selectors (Dropdowns) */}
-        <div className="mt-auto space-y-3 mb-4">
-          {selectors?.map((selector, idx) => (
-            <div key={idx} className="space-y-1">
-              <label className="text-[10px] font-bold text-[#45a049] uppercase tracking-wider">
-                {selector.label}
-              </label>
-              <div className="relative">
-                <select
-                  className="w-full appearance-none bg-white border border-[#45a049] text-gray-700 text-xs font-bold py-2 px-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#45a049]"
-                  defaultValue={selector.options[0]}
-                  onChange={(e) => setSelections(prev => ({ ...prev, [selector.label]: e.target.value }))}
-                >
-                  {selector.options.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer: Counter + Add Button */}
-        <div className="flex flex-row items-center gap-3 mt-auto pt-3">
-          {/* Counter */}
-          <div className="flex items-center justify-between border border-[#45a049] rounded-lg h-9 w-28 bg-white shrink-0">
-            <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="w-8 h-full flex items-center justify-center text-[#45a049] hover:bg-green-50 rounded-l-lg transition-colors"
-            >
-              <Minus className="w-4 h-4 font-bold" />
-            </button>
-            <span className="text-sm font-bold text-gray-700">{quantity}</span>
-            <button
-              onClick={() => setQuantity(quantity + 1)}
-              className="w-8 h-full flex items-center justify-center text-[#45a049] hover:bg-green-50 rounded-r-lg transition-colors"
-            >
-              <Plus className="w-4 h-4 font-bold" />
-            </button>
+        <div className="flex flex-col items-start mt-1">
+          <span className="text-[10px] font-bold text-blue-600">
+            {discountPercentage}% OFF
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-gray-900 text-sm md:text-base">
+              ₹{salePrice}
+            </span>
+            <span className="text-[10px] text-gray-400 line-through">
+              MRP ₹{regularPrice}
+            </span>
           </div>
-
-          {/* Add Button */}
-          <Button className="flex-1 bg-[#45a049] hover:bg-[#388e3c] text-white font-bold h-9 rounded-lg uppercase tracking-wide shadow-sm">
-            Add
-          </Button>
         </div>
       </div>
     </div>
