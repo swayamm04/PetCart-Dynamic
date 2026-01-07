@@ -29,11 +29,11 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                         {isActive ? (
                             // Active Indicator Background
                             <div className="relative">
-                                <item.icon className={`w-6 h-6 stroke-[2.5px]`} />
+                                <item.icon className={`w-8 h-8 stroke-[2.5px]`} />
                                 <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#45a049] rounded-full"></span>
                             </div>
                         ) : (
-                            <item.icon className="w-6 h-6" />
+                            <item.icon className="w-8 h-8" />
                         )}
 
                         {/* Optional: we can hide labels if we want a cleaner look like the image, 

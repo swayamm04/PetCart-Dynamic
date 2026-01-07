@@ -55,15 +55,15 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
               <span className="text-[10px] font-black tracking-widest uppercase">HomeRun</span>
             </a>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8 ml-12">
+            {/* Desktop Navigation - Hidden as requested */}
+            <nav className="hidden items-center gap-8 ml-12">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => onTabChange?.(item.id)}
                   className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 relative py-1 ${activeTab === item.id
-                      ? "text-[#45a049]"
-                      : "text-gray-500 hover:text-gray-900"
+                    ? "text-[#45a049]"
+                    : "text-gray-500 hover:text-gray-900"
                     }`}
                 >
                   {item.label}
@@ -76,20 +76,23 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
 
             {/* Right: Actions */}
             <div className="flex items-center gap-5">
-              <button className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-[#EFC41A] transition-colors">
-                English <ChevronDown className="w-3.5 h-3.5" />
+              <button
+                onClick={() => onTabChange?.("orders")}
+                className="hidden md:flex items-center gap-1 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-[#45a049]"
+              >
+                My Orders
               </button>
 
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="hover:text-[#EFC41A] transition-colors"
+                className="hover:text-[#45a049] transition-colors"
               >
                 <Search className="w-5 h-5" />
               </button>
 
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative hover:text-[#EFC41A] transition-colors"
+                className="relative hover:text-[#45a049] transition-colors"
               >
                 <ShoppingBag className="w-5 h-5" />
                 {cartCount > 0 && (
@@ -100,6 +103,13 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
                     {cartCount}
                   </span>
                 )}
+              </button>
+
+              <button
+                onClick={() => onTabChange?.("profile")}
+                className="hidden md:flex hover:text-[#45a049] transition-colors"
+              >
+                <User className="w-5 h-5" />
               </button>
             </div>
           </div>

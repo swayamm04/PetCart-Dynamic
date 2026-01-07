@@ -3,9 +3,16 @@ import { useCart } from "@/context/CartContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CartDrawer = () => {
     const { cartItems, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, cartTotal } = useCart();
+    const navigate = useNavigate();
+
+    const handleProceedToBuy = () => {
+        setIsCartOpen(false);
+        navigate("/checkout");
+    };
 
     return (
         <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -92,7 +99,10 @@ const CartDrawer = () => {
                                     <span>₹{cartTotal.toLocaleString()}</span>
                                 </div>
                             </div>
-                            <Button className="w-full bg-[#45a049] hover:bg-[#388e3c] text-white font-bold h-12 text-base shadow-lg rounded-xl">
+                            <Button
+                                onClick={handleProceedToBuy}
+                                className="w-full bg-[#45a049] hover:bg-[#388e3c] text-white font-bold h-12 text-base shadow-lg rounded-xl"
+                            >
                                 Proceed to Buy
                             </Button>
                         </div>

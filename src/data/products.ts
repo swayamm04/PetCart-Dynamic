@@ -7,7 +7,8 @@ export const products: ProductCardProps[] = [
         regularPrice: 2670,
         salePrice: 1733,
         discountPercentage: 35,
-        unit: "90m"
+        unit: "90m",
+        category: "Wires"
     },
     {
         name: "Hettich Onsys 4447i Soft Close Hinges, 1 Set (2 Nos)",
@@ -15,7 +16,8 @@ export const products: ProductCardProps[] = [
         regularPrice: 384,
         salePrice: 227,
         discountPercentage: 41,
-        unit: "1 Set"
+        unit: "1 Set",
+        category: "Plywood, MDF & HDHMR"
     },
     {
         name: "Birla White WallCare Putty, 30 Kg Bag",
@@ -23,7 +25,8 @@ export const products: ProductCardProps[] = [
         regularPrice: 680,
         salePrice: 620,
         discountPercentage: 9,
-        unit: "30kg"
+        unit: "30kg",
+        category: "Painting"
     },
     {
         name: "Century Sainik MR 303 Plywood",
@@ -31,7 +34,8 @@ export const products: ProductCardProps[] = [
         regularPrice: 1442,
         salePrice: 1344,
         discountPercentage: 7,
-        unit: "8'x4'"
+        unit: "8'x4'",
+        category: "Plywood, MDF & HDHMR"
     },
     {
         name: "Asian Paints SmartCare Damp Proof Advanced",
@@ -39,6 +43,7 @@ export const products: ProductCardProps[] = [
         regularPrice: 1600,
         salePrice: 1200,
         discountPercentage: 25,
-        unit: "4L"
+        unit: "4L",
+        category: "Water Proofing"
     },
 ];

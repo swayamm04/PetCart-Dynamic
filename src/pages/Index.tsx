@@ -79,15 +79,16 @@ const Index = () => {
         <Header activeTab={currentTab} onTabChange={changeTab} />
       </div>
 
-      <main ref={mainRef} className="flex-1 overflow-y-auto overflow-x-hidden relative">
+      <main ref={mainRef} className="flex-1 overflow-hidden relative">
         {currentTab === "home" && (
-          <>
+          <div className="h-full overflow-y-auto overflow-x-hidden">
             <CategoryGrid onCategoryClick={handleCategoryClick} />
             <BannerCarousel onProductClick={selectProduct} />
             <DealsSection onProductClick={selectProduct} />
             <TrustSignals />
             <Testimonials />
-          </>
+            <Footer />
+          </div>
         )}
 
         {currentTab === "categories" && (
@@ -96,10 +97,20 @@ const Index = () => {
             onProductClick={selectProduct}
           />
         )}
-        {currentTab === "orders" && <Orders />}
-        {currentTab === "profile" && <Profile />}
 
-        <Footer />
+        {currentTab === "orders" && (
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <Orders />
+            <Footer />
+          </div>
+        )}
+
+        {currentTab === "profile" && (
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <Profile />
+            <Footer />
+          </div>
+        )}
       </main>
 
       <div className="flex-none">

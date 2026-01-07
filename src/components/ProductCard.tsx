@@ -10,6 +10,7 @@ export interface ProductCardProps {
   salePrice: number;
   discountPercentage: number;
   unit?: string;
+  category?: string;
   onProductClick?: (name: string) => void;
 }
 
