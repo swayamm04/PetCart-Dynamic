@@ -20,6 +20,7 @@ const Index = () => {
   const [currentTab, setCurrentTab] = useState("home");
   const [targetCategory, setTargetCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [profileView, setProfileView] = useState<'main' | 'addresses'>('main');
   const mainRef = useRef<HTMLElement>(null);
 
   // Reset scroll position on tab or product change
@@ -27,17 +28,20 @@ const Index = () => {
     if (mainRef.current) {
       mainRef.current.scrollTo(0, 0);
     }
-  }, [currentTab, selectedProduct]);
+  }, [currentTab, selectedProduct, profileView]);
+
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
       if (event.state) {
         setCurrentTab(event.state.tab || "home");
         setSelectedProduct(event.state.product || null);
         if (event.state.category) setTargetCategory(event.state.category);
+        setProfileView(event.state.profileView || 'main');
       } else {
         // Initial state
         setCurrentTab("home");
         setSelectedProduct(null);
+        setProfileView('main');
       }
     };
 
@@ -45,7 +49,7 @@ const Index = () => {
 
     // Set initial history state if not present
     if (!window.history.state) {
-      window.history.replaceState({ tab: "home" }, "");
+      window.history.replaceState({ tab: "home", profileView: 'main' }, "");
     }
 
     return () => window.removeEventListener("popstate", handlePopState);
@@ -53,35 +57,43 @@ const Index = () => {
 
   const changeTab = useCallback((tab: string) => {
     setCurrentTab(tab);
-    window.history.pushState({ tab, category: targetCategory, product: selectedProduct }, "");
-  }, [targetCategory, selectedProduct]);
+    // Reset profile view when switching to profile tab directly via nav
+    const newProfileView = tab === 'profile' ? 'main' : profileView;
+    if (tab === 'profile') setProfileView('main');
+
+    window.history.pushState({
+      tab,
+      category: targetCategory,
+      product: selectedProduct,
+      profileView: newProfileView
+    }, "");
+  }, [targetCategory, selectedProduct, profileView]);
 
   const selectProduct = useCallback((product: string | null) => {
     setSelectedProduct(product);
     if (product) {
-      window.history.pushState({ tab: currentTab, category: targetCategory, product }, "");
+      window.history.pushState({ tab: currentTab, category: targetCategory, product, profileView }, "");
     } else {
-      // If we are closing, we might want to go back in history if it was a push
-      // But for simplicity in this SPA, we just push a null product state
-      window.history.pushState({ tab: currentTab, category: targetCategory, product: null }, "");
+      window.history.pushState({ tab: currentTab, category: targetCategory, product: null, profileView }, "");
     }
-  }, [currentTab, targetCategory]);
+  }, [currentTab, targetCategory, profileView]);
 
   const handleCategoryClick = (category: string) => {
     setTargetCategory(category);
     setCurrentTab("categories");
-    window.history.pushState({ tab: "categories", category, product: null }, "");
+    window.history.pushState({ tab: "categories", category, product: null, profileView: 'main' }, "");
   };
-
-  const [profileView, setProfileView] = useState<'main' | 'addresses'>('main');
 
   const handleAddressClick = () => {
     setProfileView('addresses');
-    changeTab('profile');
+    setCurrentTab('profile');
+    window.history.pushState({ tab: 'profile', category: targetCategory, product: selectedProduct, profileView: 'addresses' }, "");
   };
 
-  // Reset profile view when tab changes away from profile ?? 
-  // keeping it simple for now.
+  const handleProfileViewChange = (view: 'main' | 'addresses') => {
+    setProfileView(view);
+    window.history.pushState({ tab: 'profile', category: targetCategory, product: selectedProduct, profileView: view }, "");
+  };
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
@@ -122,7 +134,7 @@ const Index = () => {
 
         {currentTab === "profile" && (
           <div className="h-full overflow-y-auto overflow-x-hidden">
-            <Profile initialView={profileView} />
+            <Profile view={profileView} onViewChange={handleProfileViewChange} />
             <Footer />
           </div>
         )}
