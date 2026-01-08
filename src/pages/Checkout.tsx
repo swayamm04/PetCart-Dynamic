@@ -4,16 +4,21 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, MapPin, CreditCard, Wallet, Truck, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { useOrders } from "@/context/OrderContext";
 
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
+    const { user, updateAddress, registrationRequired } = useAuth();
+    const { addOrder } = useOrders();
     const navigate = useNavigate();
+
     const [step, setStep] = useState(1); // 1: Address, 2: Payment, 3: Success
     const [address, setAddress] = useState({
-        pincode: "",
-        houseNo: "",
-        area: "",
-        landmark: ""
+        pincode: user?.address?.pincode || "",
+        houseNo: user?.address?.houseNo || "",
+        area: user?.address?.area || "",
+        landmark: user?.address?.landmark || ""
     });
     const [paymentMethod, setPaymentMethod] = useState("upi");
 
@@ -21,7 +26,16 @@ const Checkout = () => {
     const finalTotal = cartTotal + deliveryFee;
 
     const handlePlaceOrder = () => {
-        // Mock order placement
+        // Save address to user context if provided
+        updateAddress(address);
+
+        // Save formal order
+        addOrder({
+            items: cartItems,
+            total: finalTotal,
+            address: address
+        });
+
         toast.success("Order placed successfully!", {
             description: "Your order will be delivered within 60 mins."
         });
@@ -86,51 +100,86 @@ const Checkout = () => {
                 </div>
 
                 {step === 1 ? (
-                    /* Address Form */
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4 animate-in slide-in-from-right-4 duration-300">
-                        <div className="flex items-center gap-2 mb-2">
-                            <MapPin className="w-5 h-5 text-[#45a049]" />
-                            <h2 className="font-bold">Delivery Address</h2>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Pincode</label>
-                                <input
-                                    type="text"
-                                    value={address.pincode}
-                                    onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
-                                    placeholder="Enter 6-digit pincode"
-                                    className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all"
-                                />
+                    /* Address Step */
+                    <div className="space-y-4 animate-in slide-in-from-right-4 duration-300">
+                        {user?.address && !registrationRequired ? (
+                            /* Saved Address View */
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-[#45a049] space-y-4">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-5 h-5 text-[#45a049]" />
+                                        <h2 className="font-bold">Saved Delivery Address</h2>
+                                    </div>
+                                    <button
+                                        onClick={() => updateAddress(undefined)}
+                                        className="text-xs font-bold text-[#45a049] hover:underline"
+                                    >
+                                        EDIT
+                                    </button>
+                                </div>
+                                <div className="p-4 bg-green-50 rounded-xl border border-green-100">
+                                    <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                                    <p className="text-xs text-gray-600 mt-1">
+                                        {user.address.houseNo}, {user.address.area}
+                                    </p>
+                                    <p className="text-xs text-gray-600">{user.address.landmark}</p>
+                                    <p className="text-sm font-black text-[#45a049] mt-2">PIN: {user.address.pincode}</p>
+                                </div>
+                                <Button
+                                    onClick={() => setStep(2)}
+                                    className="w-full bg-[#45a049] hover:bg-[#388e3c] h-12 rounded-xl font-bold"
+                                >
+                                    Proceed to Payment
+                                </Button>
                             </div>
-                            <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">House No / Flat / Floor</label>
-                                <input
-                                    type="text"
-                                    value={address.houseNo}
-                                    onChange={(e) => setAddress({ ...address, houseNo: e.target.value })}
-                                    placeholder="e.g. Flat 101, Building B"
-                                    className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all"
-                                />
+                        ) : (
+                            /* Address Form */
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <MapPin className="w-5 h-5 text-[#45a049]" />
+                                    <h2 className="font-bold">Delivery Address</h2>
+                                </div>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Pincode</label>
+                                        <input
+                                            type="text"
+                                            value={address.pincode}
+                                            onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
+                                            placeholder="Enter 6-digit pincode"
+                                            className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">House No / Flat / Floor</label>
+                                        <input
+                                            type="text"
+                                            value={address.houseNo}
+                                            onChange={(e) => setAddress({ ...address, houseNo: e.target.value })}
+                                            placeholder="e.g. Flat 101, Building B"
+                                            className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Area / Colony</label>
+                                        <textarea
+                                            rows={2}
+                                            value={address.area}
+                                            onChange={(e) => setAddress({ ...address, area: e.target.value })}
+                                            placeholder="Enter your full area address"
+                                            className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all resize-none"
+                                        />
+                                    </div>
+                                </div>
+                                <Button
+                                    onClick={() => setStep(2)}
+                                    disabled={!address.pincode || !address.houseNo}
+                                    className="w-full bg-[#45a049] hover:bg-[#388e3c] h-12 rounded-xl font-bold mt-4"
+                                >
+                                    Select Payment Method
+                                </Button>
                             </div>
-                            <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Area / Colony</label>
-                                <textarea
-                                    rows={3}
-                                    value={address.area}
-                                    onChange={(e) => setAddress({ ...address, area: e.target.value })}
-                                    placeholder="Enter your full area address"
-                                    className="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#45a049] transition-all resize-none"
-                                />
-                            </div>
-                        </div>
-                        <Button
-                            onClick={() => setStep(2)}
-                            disabled={!address.pincode || !address.houseNo}
-                            className="w-full bg-[#45a049] hover:bg-[#388e3c] h-12 rounded-xl font-bold mt-4"
-                        >
-                            Select Payment Method
-                        </Button>
+                        )}
                     </div>
                 ) : (
                     /* Payment Selection */

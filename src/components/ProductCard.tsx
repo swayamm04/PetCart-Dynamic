@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { Plus, Minus, Clock } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 export interface ProductCardProps {
   name: string;
@@ -16,11 +16,24 @@ export interface ProductCardProps {
 
 const ProductCard = ({ name, image, regularPrice, salePrice, discountPercentage, unit = "1", onProductClick }: ProductCardProps) => {
   const { cartItems, addToCart, updateQuantity } = useCart();
+  const { isAuthenticated, openLogin } = useAuth();
   const cartItem = cartItems.find((item) => item.name === name);
   const quantity = cartItem?.quantity || 0;
 
   const handleAdd = () => {
+    if (!isAuthenticated) {
+      openLogin();
+      return;
+    }
     addToCart({ id: name, name, price: salePrice, image });
+  };
+
+  const handleUpdateQuantity = (delta: number) => {
+    if (!isAuthenticated) {
+      openLogin();
+      return;
+    }
+    updateQuantity(name, delta);
   };
 
   return (
@@ -55,7 +68,7 @@ const ProductCard = ({ name, image, regularPrice, salePrice, discountPercentage,
           ) : (
             <div className="flex items-center gap-1 bg-[#45a049] rounded-lg md:rounded-xl shadow-md p-0.5 md:p-1">
               <button
-                onClick={() => updateQuantity(name, -1)}
+                onClick={() => handleUpdateQuantity(-1)}
                 className="w-5 h-5 md:w-7 md:h-7 flex items-center justify-center text-white hover:bg-[#388e3c] rounded-md transition-colors"
               >
                 <Minus className="w-3 h-3 md:w-3 md:h-3" />
@@ -64,7 +77,7 @@ const ProductCard = ({ name, image, regularPrice, salePrice, discountPercentage,
                 {quantity}
               </span>
               <button
-                onClick={() => updateQuantity(name, 1)}
+                onClick={() => handleUpdateQuantity(1)}
                 className="w-5 h-5 md:w-7 md:h-7 flex items-center justify-center text-white hover:bg-[#388e3c] rounded-md transition-colors"
               >
                 <Plus className="w-3 h-3 md:w-3 md:h-3" />

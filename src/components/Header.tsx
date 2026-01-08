@@ -1,5 +1,6 @@
-import { Search, ShoppingBag, MapPin, ChevronDown, User, Grid } from "lucide-react";
+import { Search, ShoppingBag, MapPin, ChevronDown, User, Grid, LogIn } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import SearchOverlay from "./SearchOverlay";
@@ -7,11 +8,14 @@ import SearchOverlay from "./SearchOverlay";
 interface HeaderProps {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
+  onAddressClick?: () => void;
 }
 
-const Header = ({ activeTab, onTabChange }: HeaderProps) => {
+const Header = ({ activeTab, onTabChange, onAddressClick }: HeaderProps) => {
   const { cartCount, setIsCartOpen } = useCart();
+  const { user, location, openLogin, logout, detectLocation, isAuthenticated } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const navItems = [
     { id: "home", label: "Home" },
@@ -20,6 +24,30 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
     { id: "profile", label: "Profile" },
   ];
 
+  const handleDetectLocation = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDetecting(true);
+    try {
+      await detectLocation();
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (activeTab === "profile") return;
+    onTabChange?.("profile");
+  };
+
+  const handleOrdersClick = () => {
+    if (isAuthenticated) {
+      if (activeTab === "orders") return;
+      onTabChange?.("orders");
+    } else {
+      openLogin();
+    }
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-white shadow-sm transition-all duration-300">
@@ -27,20 +55,28 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
           <div className="flex items-center justify-between">
 
             {/* Left: 60 Mins Badge & Location */}
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex flex-col items-center justify-center bg-[#45a049] text-white w-10 h-10 rounded-lg leading-none">
+            {/* Left: 60 Mins Badge & Location */}
+            <div className="flex items-center gap-4 flex-1">
+              <div className="hidden md:flex flex-col items-center justify-center bg-[#45a049] text-white w-10 h-10 rounded-lg leading-none shrink-0">
                 <span className="text-sm font-bold">60</span>
                 <span className="text-[9px] uppercase font-bold">Mins</span>
               </div>
 
-              <div className="flex flex-col leading-tight">
-                <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Deliver To</span>
-                <div className="flex items-center gap-1 cursor-pointer hover:text-[#45a049] transition-colors">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span className="text-sm font-bold text-gray-900">560035</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              {isAuthenticated && location && (
+                <div
+                  className="flex flex-col leading-tight animate-in fade-in slide-in-from-left-4 duration-500 cursor-pointer"
+                  onClick={onAddressClick}
+                >
+                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">Deliver To</span>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-[#45a049]" />
+                    <span className="text-base font-black text-gray-900">
+                      {location.pincode}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Center: Brand Logo */}
@@ -75,9 +111,9 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
             </nav>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 flex-1 justify-end">
               <button
-                onClick={() => onTabChange?.("orders")}
+                onClick={handleOrdersClick}
                 className="hidden md:flex items-center gap-1 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-[#45a049]"
               >
                 My Orders
@@ -106,10 +142,23 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
               </button>
 
               <button
-                onClick={() => onTabChange?.("profile")}
-                className="hidden md:flex hover:text-[#45a049] transition-colors"
+                onClick={handleProfileClick}
+                className="hidden md:flex group items-center gap-2 hover:text-[#45a049] transition-all"
               >
-                <User className="w-5 h-5" />
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-2">
+                    <span className="hidden md:block text-xs font-black uppercase tracking-tighter text-gray-900">
+                      Hi, {user?.name}
+                    </span>
+                    <div className="w-8 h-8 bg-[#45a049]/10 rounded-full flex items-center justify-center text-[#45a049] font-black text-xs border border-[#45a049]/20">
+                      {user?.name?.[0]}
+                    </div>
+                  </div>
+                ) : (
+                  <span className="text-sm font-bold uppercase tracking-wider text-gray-700 group-hover:text-[#45a049]">
+                    Login / Signin
+                  </span>
+                )}
               </button>
             </div>
           </div>

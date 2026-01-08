@@ -13,6 +13,7 @@ import CategoriesFull from "@/components/CategoriesFull";
 import Orders from "@/components/Orders";
 import Profile from "@/components/Profile";
 import ProductDetail from "@/components/ProductDetail";
+import LoginOverlay from "@/components/LoginOverlay";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const Index = () => {
@@ -72,11 +73,25 @@ const Index = () => {
     window.history.pushState({ tab: "categories", category, product: null }, "");
   };
 
+  const [profileView, setProfileView] = useState<'main' | 'addresses'>('main');
+
+  const handleAddressClick = () => {
+    setProfileView('addresses');
+    changeTab('profile');
+  };
+
+  // Reset profile view when tab changes away from profile ?? 
+  // keeping it simple for now.
+
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       <div className="flex-none">
         <AnnouncementBar />
-        <Header activeTab={currentTab} onTabChange={changeTab} />
+        <Header
+          activeTab={currentTab}
+          onTabChange={changeTab}
+          onAddressClick={handleAddressClick}
+        />
       </div>
 
       <main ref={mainRef} className="flex-1 overflow-hidden relative">
@@ -107,7 +122,7 @@ const Index = () => {
 
         {currentTab === "profile" && (
           <div className="h-full overflow-y-auto overflow-x-hidden">
-            <Profile />
+            <Profile initialView={profileView} />
             <Footer />
           </div>
         )}
@@ -125,6 +140,7 @@ const Index = () => {
       )}
       <FloatingCart />
       <CartDrawer />
+      <LoginOverlay />
     </div>
   );
 };

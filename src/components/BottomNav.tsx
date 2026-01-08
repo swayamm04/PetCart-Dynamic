@@ -1,5 +1,6 @@
 import React from "react";
 import { Home, Grid, ClipboardList, User } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface BottomNavProps {
     activeTab: string;
@@ -7,6 +8,7 @@ interface BottomNavProps {
 }
 
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
+    const { isAuthenticated, openLogin } = useAuth();
 
     const navItems = [
         { id: "home", icon: Home, label: "Home" },
@@ -15,6 +17,14 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         { id: "profile", icon: User, label: "Profile" },
     ];
 
+    const handleClick = (id: string) => {
+        if ((id === "orders" || id === "profile") && !isAuthenticated) {
+            openLogin();
+        } else {
+            onTabChange(id);
+        }
+    };
+
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 pb-safe px-6 md:hidden z-40 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             {navItems.map((item) => {
@@ -22,7 +32,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                 return (
                     <button
                         key={item.id}
-                        onClick={() => onTabChange(item.id)}
+                        onClick={() => handleClick(item.id)}
                         className={`flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? "text-[#45a049] -translate-y-1" : "text-gray-400 hover:text-gray-600"
                             }`}
                     >
@@ -35,12 +45,6 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                         ) : (
                             <item.icon className="w-8 h-8" />
                         )}
-
-                        {/* Optional: we can hide labels if we want a cleaner look like the image, 
-                but user mentioned "one is home then... so labels are implied or maybe just icons" 
-                The image seems to have just icons with a subtle glow or indicator 
-                Let's keep icons prominent.
-            */}
                     </button>
                 );
             })}
@@ -49,3 +53,4 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
 };
 
 export default BottomNav;
+
