@@ -13,6 +13,12 @@ const AdminLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Redirect if already logged in
+    if (localStorage.getItem("admin_token")) {
+        navigate("/admin");
+        return null;
+    }
+
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -43,6 +49,13 @@ const AdminLogin = () => {
                     <CardDescription>
                         Enter your credentials to access the dashboard
                     </CardDescription>
+
+                    {/* Demo Credentials Alert - Remove in production */}
+                    <div className="mt-4 p-3 bg-blue-50 text-blue-700 text-xs rounded-md text-left font-mono">
+                        <p className="font-bold mb-1">Demo Credentials:</p>
+                        <p>User: admin@homerun.co</p>
+                        <p>Pass: admin123</p>
+                    </div>
                 </CardHeader>
                 <form onSubmit={handleLogin}>
                     <CardContent className="space-y-4">

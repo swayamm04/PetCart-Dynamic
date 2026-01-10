@@ -1,4 +1,5 @@
 import { MapPin, Phone, Mail, Instagram, Facebook, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -72,8 +73,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-black/10 mt-8 md:mt-16 pt-4 md:pt-8 text-center text-[10px] md:text-sm font-semibold opacity-75">
+        <div className="border-t border-black/10 mt-8 md:mt-16 pt-4 md:pt-8 flex flex-col md:flex-row items-center justify-between text-[10px] md:text-sm font-semibold opacity-75">
           <p>© {new Date().getFullYear()} HomeRun. All rights reserved.</p>
+          <Link to="/admin/login" className="hover:text-black transition-colors opacity-50 hover:opacity-100">
+            Admin Panel
+          </Link>
         </div>
       </div>
     </footer>
