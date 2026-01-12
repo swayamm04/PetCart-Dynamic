@@ -1,49 +1,80 @@
-import { ProductCardProps } from "@/components/ProductCard";
+export interface Product {
+    id: string;
+    name: string;
+    image: string;
+    regularPrice: number;
+    salePrice: number;
+    discountPercentage: number;
+    category: string;
+    description: string;
+    inStock: boolean;
+}
 
-export const products: ProductCardProps[] = [
+export const products: Product[] = [
     {
-        name: "Polycab Maxima+ Green Wire HR FR-LSH LF",
-        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-        regularPrice: 2670,
-        salePrice: 1733,
-        discountPercentage: 35,
-        unit: "90m",
-        category: "Wires"
+        id: "1",
+        name: "Premium Dog Food - Chicken & Rice",
+        image: "https://images.unsplash.com/photo-1589924691195-41432c84c161?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 49.99,
+        salePrice: 39.99,
+        discountPercentage: 20,
+        category: "Dogs",
+        description: "High-quality dry dog food with real chicken and rice. Supports healthy digestion.",
+        inStock: true,
     },
     {
-        name: "Hettich Onsys 4447i Soft Close Hinges, 1 Set (2 Nos)",
-        image: "https://home-run.co/cdn/shop/files/4447i_Soft_Close_Hinges_1_Set_2_Nos_6f701d9b-ca45-4133-940f-bcbeb9f842ac.png?v=1758624384&width=713",
-        regularPrice: 384,
-        salePrice: 227,
-        discountPercentage: 41,
-        unit: "1 Set",
-        category: "Plywood, MDF & HDHMR"
-    },
-    {
-        name: "Birla White WallCare Putty, 30 Kg Bag",
-        image: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&h=400&fit=crop",
-        regularPrice: 680,
-        salePrice: 620,
-        discountPercentage: 9,
-        unit: "30kg",
-        category: "Painting"
-    },
-    {
-        name: "Century Sainik MR 303 Plywood",
-        image: "https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?w=400&h=400&fit=crop",
-        regularPrice: 1442,
-        salePrice: 1344,
-        discountPercentage: 7,
-        unit: "8'x4'",
-        category: "Plywood, MDF & HDHMR"
-    },
-    {
-        name: "Asian Paints SmartCare Damp Proof Advanced",
-        image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&h=400&fit=crop",
-        regularPrice: 1600,
-        salePrice: 1200,
+        id: "2",
+        name: "Interactive Cat Toy",
+        image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 19.99,
+        salePrice: 14.99,
         discountPercentage: 25,
-        unit: "4L",
-        category: "Water Proofing"
+        category: "Cats",
+        description: "Keep your cat entertained for hours with this interactive laser toy.",
+        inStock: true,
+    },
+    {
+        id: "3",
+        name: "Large Bird Cage",
+        image: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 120.00,
+        salePrice: 99.00,
+        discountPercentage: 17,
+        category: "Birds",
+        description: "Spacious cage for parrots and large birds. Easy to clean.",
+        inStock: true,
+    },
+    {
+        id: "4",
+        name: "Aquarium Filter 50G",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 35.00,
+        salePrice: 35.00,
+        discountPercentage: 0,
+        category: "Fish",
+        description: "Powerful filter for aquariums up to 50 gallons.",
+        inStock: true,
+    },
+    {
+        id: "5",
+        name: "Soft Dog Bed",
+        image: "https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 59.99,
+        salePrice: 45.00,
+        discountPercentage: 25,
+        category: "Dogs",
+        description: "Orthopedic memory foam bed for dogs of all sizes.",
+        inStock: true,
+    },
+    {
+        id: "6",
+        name: "Cat Scratching Post",
+        image: "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 29.99,
+        salePrice: 24.99,
+        discountPercentage: 16,
+        category: "Cats",
+        description: "Durable sisal scratching post to save your furniture.",
+        inStock: true,
     },
 ];
