@@ -1,10 +1,20 @@
+export interface Address {
+    id: string;
+    type: "Home" | "Work" | "Other";
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    isDefault?: boolean;
+}
+
 export interface User {
     id: string;
     name: string;
     phone: string;
     password?: string; // In real app, this would be hashed
     orders: any[];
-    addresses: any[];
+    addresses: Address[];
     role: "user" | "admin";
 }
 

@@ -1,0 +1,42 @@
+[
+    {
+        "id": "USR-001",
+        "name": "Liam Johnson",
+        "email": "liam@example.com",
+        "role": "Customer",
+        "status": "Active",
+        "joined": "2023-01-15"
+    },
+    {
+        "id": "USR-002",
+        "name": "Emma Smith",
+        "email": "emma@example.com",
+        "role": "Customer",
+        "status": "Active",
+        "joined": "2023-02-20"
+    },
+    {
+        "id": "USR-003",
+        "name": "Noah Williams",
+        "email": "noah@example.com",
+        "role": "Moderator",
+        "status": "Active",
+        "joined": "2023-03-10"
+    },
+    {
+        "id": "USR-004",
+        "name": "Olivia Brown",
+        "email": "olivia@example.com",
+        "role": "Customer",
+        "status": "Banned",
+        "joined": "2023-05-05"
+    },
+    {
+        "id": "USR-005",
+        "name": "Admin User",
+        "email": "admin@petzy.com",
+        "role": "Admin",
+        "status": "Active",
+        "joined": "2023-01-01"
+    }
+]

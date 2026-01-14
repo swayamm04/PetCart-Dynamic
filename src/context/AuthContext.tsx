@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, mockAuth } from "@/lib/mock-auth";
+import { User, mockAuth, Address } from "@/lib/mock-auth";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
@@ -14,6 +14,9 @@ interface AuthContextType {
     sendOTP: (phone: string) => Promise<boolean>;
     verifyOTP: (phone: string, otp: string) => Promise<boolean>;
     resetPassword: (phone: string, newPassword: string) => Promise<boolean>;
+    addAddress: (address: Omit<Address, 'id'>) => Promise<boolean>;
+    updateAddress: (id: string, address: Partial<Address>) => Promise<boolean>;
+    deleteAddress: (id: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -82,6 +85,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const addAddress = async (addressData: Omit<Address, 'id'>) => {
+        if (!user) return false;
+        const newAddress: Address = {
+            ...addressData,
+            id: Math.random().toString(36).substr(2, 9)
+        };
+        const updatedUser = { ...user, addresses: [...(user.addresses || []), newAddress] };
+        setUser(updatedUser);
+        localStorage.setItem("petshop_user", JSON.stringify(updatedUser));
+        return true;
+    };
+
+    const updateAddress = async (id: string, addressData: Partial<Address>) => {
+        if (!user) return false;
+        const updatedAddresses = user.addresses.map(addr =>
+            addr.id === id ? { ...addr, ...addressData } : addr
+        );
+        const updatedUser = { ...user, addresses: updatedAddresses };
+        setUser(updatedUser);
+        localStorage.setItem("petshop_user", JSON.stringify(updatedUser));
+        return true;
+    };
+
+    const deleteAddress = async (id: string) => {
+        if (!user) return false;
+        const updatedAddresses = user.addresses.filter(addr => addr.id !== id);
+        const updatedUser = { ...user, addresses: updatedAddresses };
+        setUser(updatedUser);
+        localStorage.setItem("petshop_user", JSON.stringify(updatedUser));
+        return true;
+    };
+
     const logout = () => {
         setUser(null);
         localStorage.removeItem("petshop_user");
@@ -98,7 +133,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             checkUser: mockAuth.checkUserExists,
             sendOTP: mockAuth.sendOTP,
             verifyOTP: mockAuth.verifyOTP,
-            resetPassword
+            resetPassword,
+            addAddress,
+            updateAddress,
+            deleteAddress
         }}>
             {children}
         </AuthContext.Provider>

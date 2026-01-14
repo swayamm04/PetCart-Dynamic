@@ -10,6 +10,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 
+import { products } from "@/data/products";
+
 export function Header() {
     const pathname = usePathname();
     const router = useRouter();
@@ -17,6 +19,8 @@ export function Header() {
     const { toggleCart, totalItems } = useCart();
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestionIndex, setSuggestionIndex] = useState(0);
     const [isFading, setIsFading] = useState(false);
 
@@ -45,6 +49,24 @@ export function Header() {
 
         return () => clearInterval(interval);
     }, []);
+
+    // Updated: Move filtering to onChange to decouple showing logic
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (query.trim().length > 0) {
+            const matches = products
+                .filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
+                .map(p => p.name)
+                .slice(0, 5);
+            setSuggestions(matches);
+            setShowSuggestions(true);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
 
     const [tipIndex, setTipIndex] = useState(0);
     const [isTipFading, setIsTipFading] = useState(false);
@@ -80,6 +102,22 @@ export function Header() {
         if (!user) {
             e.preventDefault();
             router.push("/login");
+        }
+    };
+
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            performSearch(searchQuery);
+        }
+    };
+
+    const performSearch = (query: string) => {
+        setShowSuggestions(false);
+        setSearchQuery(query); // Update input if clicked from suggestion
+        if (query.trim()) {
+            router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
+        } else {
+            router.push('/shop');
         }
     };
 
@@ -143,7 +181,12 @@ export function Header() {
                                 <input
                                     type="text"
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => { if (searchQuery.trim()) setShowSuggestions(true); }}
+                                    onClick={() => { if (searchQuery.trim()) setShowSuggestions(true); }}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} // Delay to allow click
+                                    // Add onKeyDown listener here
+                                    onKeyDown={handleSearch}
                                     className="w-full border-none rounded-xl py-3 pl-10 pr-12 text-sm font-medium focus:outline-none shadow-lg shadow-black/5 relative z-10 bg-transparent"
                                 />
                                 {/* Dynamic Placeholder */}
@@ -155,6 +198,25 @@ export function Header() {
                                 <div className="absolute inset-0 bg-white rounded-xl shadow-lg shadow-black/5 -z-0"></div>
 
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-black/40 group-focus-within:text-black transition-colors duration-300 z-20" />
+
+                                {/* Suggestions Dropdown */}
+                                {showSuggestions && suggestions.length > 0 && (
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl overflow-hidden z-20 border border-gray-100">
+                                        {suggestions.map((suggestion, index) => (
+                                            <button
+                                                key={index}
+                                                onMouseDown={(e) => {
+                                                    e.preventDefault(); // Prevent focus loss
+                                                    performSearch(suggestion);
+                                                }}
+                                                className="w-full text-left px-4 py-3 text-sm hover:bg-yellow-50 hover:text-yellow-700 transition-colors flex items-center gap-2 group"
+                                            >
+                                                <Search className="w-4 h-4 text-gray-400 group-hover:text-yellow-500" />
+                                                <span className="font-medium text-gray-700 group-hover:text-yellow-900">{suggestion}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="hidden lg:flex flex-1" /> // Spacer to keep alignment if needed, or just null
@@ -196,7 +258,12 @@ export function Header() {
                                 <input
                                     type="text"
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => { if (searchQuery.trim()) setShowSuggestions(true); }}
+                                    onClick={() => { if (searchQuery.trim()) setShowSuggestions(true); }}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                    // Add onKeyDown listener here
+                                    onKeyDown={handleSearch}
                                     className="w-full border-none rounded-xl py-3 pl-10 pr-10 text-sm font-semibold focus:outline-none shadow-lg shadow-black/5 text-neutral-800 relative z-10 bg-transparent"
                                 />
                                 {/* Dynamic Placeholder Mobile */}
@@ -208,6 +275,25 @@ export function Header() {
                                 <div className="absolute inset-0 bg-white rounded-xl shadow-lg shadow-black/5 -z-0"></div>
 
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 z-20" />
+
+                                {/* Suggestions Dropdown (Mobile) */}
+                                {showSuggestions && suggestions.length > 0 && (
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl overflow-hidden z-20 border border-gray-100">
+                                        {suggestions.map((suggestion, index) => (
+                                            <button
+                                                key={index}
+                                                onMouseDown={(e) => {
+                                                    e.preventDefault(); // Prevent focus loss
+                                                    performSearch(suggestion);
+                                                }}
+                                                className="w-full text-left px-4 py-3 text-sm hover:bg-yellow-50 hover:text-yellow-700 transition-colors flex items-center gap-2 group"
+                                            >
+                                                <Search className="w-4 h-4 text-gray-400 group-hover:text-yellow-500" />
+                                                <span className="font-medium text-gray-700 group-hover:text-yellow-900">{suggestion}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

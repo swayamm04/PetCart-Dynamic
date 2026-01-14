@@ -6,6 +6,7 @@ export interface Product {
     salePrice: number;
     discountPercentage: number;
     category: string;
+    type: 'Food' | 'Accessory' | 'Medicine';
     description: string;
     inStock: boolean;
 }
@@ -19,6 +20,7 @@ export const products: Product[] = [
         salePrice: 39.99,
         discountPercentage: 20,
         category: "Dogs",
+        type: "Food",
         description: "High-quality dry dog food with real chicken and rice. Supports healthy digestion.",
         inStock: true,
     },
@@ -30,6 +32,7 @@ export const products: Product[] = [
         salePrice: 14.99,
         discountPercentage: 25,
         category: "Cats",
+        type: "Accessory",
         description: "Keep your cat entertained for hours with this interactive laser toy.",
         inStock: true,
     },
@@ -41,6 +44,7 @@ export const products: Product[] = [
         salePrice: 99.00,
         discountPercentage: 17,
         category: "Birds",
+        type: "Accessory",
         description: "Spacious cage for parrots and large birds. Easy to clean.",
         inStock: true,
     },
@@ -52,6 +56,7 @@ export const products: Product[] = [
         salePrice: 35.00,
         discountPercentage: 0,
         category: "Fish",
+        type: "Accessory",
         description: "Powerful filter for aquariums up to 50 gallons.",
         inStock: true,
     },
@@ -63,6 +68,7 @@ export const products: Product[] = [
         salePrice: 45.00,
         discountPercentage: 25,
         category: "Dogs",
+        type: "Accessory",
         description: "Orthopedic memory foam bed for dogs of all sizes.",
         inStock: true,
     },
@@ -74,7 +80,32 @@ export const products: Product[] = [
         salePrice: 24.99,
         discountPercentage: 16,
         category: "Cats",
+        type: "Accessory",
         description: "Durable sisal scratching post to save your furniture.",
         inStock: true,
     },
+    {
+        id: "7",
+        name: "Flea & Tick Prevention Chews",
+        image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 34.99,
+        salePrice: 29.99,
+        discountPercentage: 14,
+        category: "Dogs",
+        type: "Medicine",
+        description: "Monthly flea and tick prevention for dogs. Vet recommended.",
+        inStock: true,
+    },
+    {
+        id: "8",
+        name: "Calming Chews for Cats",
+        image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=60",
+        regularPrice: 24.99,
+        salePrice: 19.99,
+        discountPercentage: 20,
+        category: "Cats",
+        type: "Medicine",
+        description: "Helps reduce anxiety in cats during travel or storms.",
+        inStock: true,
+    }
 ];

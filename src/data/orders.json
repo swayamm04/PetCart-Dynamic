@@ -1,0 +1,42 @@
+[
+    {
+        "id": "ORD-001",
+        "customer": "Liam Johnson",
+        "date": "2023-10-25",
+        "total": 120.50,
+        "status": "Pending",
+        "items": 3
+    },
+    {
+        "id": "ORD-002",
+        "customer": "Emma Smith",
+        "date": "2023-10-24",
+        "total": 45.00,
+        "status": "Processing",
+        "items": 1
+    },
+    {
+        "id": "ORD-003",
+        "customer": "Noah Williams",
+        "date": "2023-10-23",
+        "total": 299.99,
+        "status": "Shipped",
+        "items": 2
+    },
+    {
+        "id": "ORD-004",
+        "customer": "Olivia Brown",
+        "date": "2023-10-22",
+        "total": 55.00,
+        "status": "Delivered",
+        "items": 1
+    },
+    {
+        "id": "ORD-005",
+        "customer": "James Jones",
+        "date": "2023-10-21",
+        "total": 15.99,
+        "status": "Cancelled",
+        "items": 1
+    }
+]
