@@ -9,11 +9,11 @@ import { Product } from "@/types/product";
 
 const CATEGORIES = [
     { name: "All", img: "/images/Category/All.png", value: null },
-    { name: 'Dogs', img: '/images/Category/dog.png', value: 'Dogs' },
-    { name: 'Cats', img: '/images/Category/cat.png', value: 'Cats' },
-    { name: 'Birds', img: '/images/Category/bird.png', value: 'Birds' },
-    { name: 'Fish', img: '/images/Category/fish.png', value: 'Fish' },
-    { name: 'Other', img: '/images/Category/others.png', value: 'Other' },
+    { name: 'Dogs', img: '/images/Category/Dog.png', value: 'Dogs' },
+    { name: 'Cats', img: '/images/Category/Cat.png', value: 'Cats' },
+    { name: 'Birds', img: '/images/Category/Bird.png', value: 'Birds' },
+    { name: 'Fish', img: '/images/Category/Fish.png', value: 'Fish' },
+    { name: 'Other', img: '/images/Category/Others.png', value: 'Other' },
 ];
 
 const PRODUCT_TYPES = ['Food', 'Accessory', 'Medicine'];
