@@ -5,11 +5,11 @@ import { LayoutGrid } from "lucide-react";
 
 export function CategoryGrid() {
     const categories = [
-        { name: 'Dogs', img: '/images/Category/dog.png', cat: 'dog', href: '/shop?category=Dogs' },
-        { name: 'Cats', img: '/images/Category/cat.png', cat: 'cat', href: '/shop?category=Cats' },
-        { name: 'Birds', img: '/images/Category/bird.png', cat: 'bird', href: '/shop?category=Birds' },
-        { name: 'Fish', img: '/images/Category/fish.png', cat: 'fish', href: '/shop?category=Fish' },
-        { name: 'Other', img: '/images/Category/others.png', cat: 'other', href: '/shop?category=Other' },
+        { name: 'Dogs', img: '/images/Category/Dog.png', cat: 'dog', href: '/shop?category=Dogs' },
+        { name: 'Cats', img: '/images/Category/Cat.png', cat: 'cat', href: '/shop?category=Cats' },
+        { name: 'Birds', img: '/images/Category/Bird.png', cat: 'bird', href: '/shop?category=Birds' },
+        { name: 'Fish', img: '/images/Category/Fish.png', cat: 'fish', href: '/shop?category=Fish' },
+        { name: 'Other', img: '/images/Category/Others.png', cat: 'other', href: '/shop?category=Other' },
     ];
 
     return (
