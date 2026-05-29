@@ -21,7 +21,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/banners', require('./routes/banners'));
-app.use('/api/banners', require('./routes/banners'));
+app.use('/api/upload', require('./routes/upload'));
 
 app.get('/', (req, res) => {
     res.send('PetShop API is running...');

@@ -23,8 +23,7 @@ export default function AddProductPage() {
 
     // New state for multiple images
     const [imageUrls, setImageUrls] = useState<string[]>([])
-    const [newImageUrl, setNewImageUrl] = useState("")
-    const [showImageInput, setShowImageInput] = useState(false)
+    const [uploading, setUploading] = useState(false)
 
     // New state for specifications
     const [specifications, setSpecifications] = useState<{ label: string; value: string }[]>([
@@ -34,11 +33,31 @@ export default function AddProductPage() {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-    const addImage = () => {
-        if (newImageUrl) {
-            setImageUrls([...imageUrls, newImageUrl])
-            setNewImageUrl("")
-            setShowImageInput(false)
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setUploading(true)
+        const formData = new FormData()
+        formData.append('image', file)
+
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/upload`, {
+                method: 'POST',
+                body: formData
+            })
+
+            const data = await res.json()
+            if (res.ok) {
+                setImageUrls([...imageUrls, data.url])
+            } else {
+                alert(data.message || "Upload failed")
+            }
+        } catch (error) {
+            console.error("Upload error:", error)
+            alert("Error uploading image")
+        } finally {
+            setUploading(false)
         }
     }
 
@@ -221,31 +240,13 @@ export default function AddProductPage() {
                                 Upload Images <span className="text-red-500">*</span>
                                 <span className="ml-2 text-xs font-normal text-muted-foreground">(First image will be the thumbnail)</span>
                             </label>
-                            {showImageInput && (
-                                <div className="flex gap-2 mb-2">
-                                    <input
-                                        id="images"
-                                        value={newImageUrl}
-                                        onChange={(e) => setNewImageUrl(e.target.value)}
-                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                        placeholder="Paste image URL here..."
-                                    />
-                                    <button
-                                        onClick={addImage}
-                                        type="button"
-                                        className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                                    >
-                                        Add
-                                    </button>
-                                    <button
-                                        onClick={() => setShowImageInput(false)}
-                                        type="button"
-                                        className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 w-10 border bg-background hover:bg-muted transition-colors"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            )}
+                            <input
+                                id="image-upload"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileUpload}
+                                className="hidden"
+                            />
 
                             <div className="grid grid-cols-4 gap-4 mt-2">
                                 {imageUrls.map((url, index) => (
@@ -265,10 +266,14 @@ export default function AddProductPage() {
                                         )}
                                     </div>
                                 ))}
-                                {!showImageInput && (
+                                {uploading ? (
+                                    <div className="flex items-center justify-center aspect-square rounded-md border border-dashed bg-muted">
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : (
                                     <button
                                         type="button"
-                                        onClick={() => setShowImageInput(true)}
+                                        onClick={() => document.getElementById('image-upload')?.click()}
                                         className="flex items-center justify-center aspect-square rounded-md border border-dashed hover:bg-muted transition-colors group"
                                     >
                                         <Plus className="h-8 w-8 text-muted-foreground group-hover:text-foreground transition-colors" />

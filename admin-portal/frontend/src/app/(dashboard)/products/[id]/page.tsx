@@ -26,8 +26,7 @@ export default function EditProductPage() {
     })
 
     const [imageUrls, setImageUrls] = useState<string[]>([])
-    const [newImageUrl, setNewImageUrl] = useState("")
-    const [showImageInput, setShowImageInput] = useState(false)
+    const [uploading, setUploading] = useState(false)
 
     // New state for specifications
     const [specifications, setSpecifications] = useState<{ label: string; value: string }[]>([])
@@ -79,11 +78,31 @@ export default function EditProductPage() {
         }
     }, [id, API_URL, router])
 
-    const addImage = () => {
-        if (newImageUrl) {
-            setImageUrls([...imageUrls, newImageUrl])
-            setNewImageUrl("")
-            setShowImageInput(false)
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setUploading(true)
+        const formDataPayload = new FormData()
+        formDataPayload.append('image', file)
+
+        try {
+            const res = await fetch(`${API_URL}/upload`, {
+                method: 'POST',
+                body: formDataPayload
+            })
+
+            const data = await res.json()
+            if (res.ok) {
+                setImageUrls([...imageUrls, data.url])
+            } else {
+                alert(data.message || "Upload failed")
+            }
+        } catch (error) {
+            console.error("Upload error:", error)
+            alert("Error uploading image")
+        } finally {
+            setUploading(false)
         }
     }
 
@@ -108,8 +127,8 @@ export default function EditProductPage() {
     const handleSubmit = async () => {
         setSaving(true)
         try {
-            // First image is thumbnail, fallback to input value if list is empty
-            const thumbnail = imageUrls.length > 0 ? imageUrls[0] : (newImageUrl || "")
+            // First image is thumbnail
+            const thumbnail = imageUrls.length > 0 ? imageUrls[0] : ""
 
             // Filter out empty specs
             const validSpecs = specifications.filter(s => s.label.trim() !== "" && s.value.trim() !== "")
@@ -254,44 +273,13 @@ export default function EditProductPage() {
                                 <span className="ml-2 text-xs font-normal text-muted-foreground">(First image will be the thumbnail)</span>
                             </label>
                             <div className="flex flex-col gap-4">
-                                {showImageInput && (
-                                    <div className="flex gap-2">
-                                        <input
-                                            id="images"
-                                            value={newImageUrl}
-                                            onChange={(e) => setNewImageUrl(e.target.value)}
-                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                            placeholder="Paste image URL here..."
-                                        />
-                                        <button
-                                            onClick={addImage}
-                                            type="button"
-                                            className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                                        >
-                                            Add
-                                        </button>
-                                        <button
-                                            onClick={() => setShowImageInput(false)}
-                                            type="button"
-                                            className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 w-10 border bg-background hover:bg-muted transition-colors"
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </button>
-                                    </div>
-                                )}
-                                {newImageUrl && showImageInput && (
-                                    <div className="relative aspect-video w-40 rounded-md overflow-hidden border">
-                                        <img
-                                            src={newImageUrl}
-                                            alt="Preview"
-                                            className="object-cover w-full h-full"
-                                            onError={(e) => e.currentTarget.style.display = 'none'}
-                                        />
-                                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] text-center py-1">
-                                            Preview
-                                        </div>
-                                    </div>
-                                )}
+                                <input
+                                    id="image-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                />
                             </div>
 
                             <div className="grid grid-cols-4 gap-4 mt-2">
@@ -312,10 +300,14 @@ export default function EditProductPage() {
                                         )}
                                     </div>
                                 ))}
-                                {!showImageInput && (
+                                {uploading ? (
+                                    <div className="flex items-center justify-center aspect-square rounded-md border border-dashed bg-muted">
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : (
                                     <button
                                         type="button"
-                                        onClick={() => setShowImageInput(true)}
+                                        onClick={() => document.getElementById('image-upload')?.click()}
                                         className="flex items-center justify-center aspect-square rounded-md border border-dashed hover:bg-muted transition-colors group"
                                     >
                                         <Plus className="h-8 w-8 text-muted-foreground group-hover:text-foreground transition-colors" />
